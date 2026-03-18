@@ -1,0 +1,475 @@
+
+
+
+
+
+
+
+
+
+
+{% load static %}
+{% block content %}
+
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-image: url('https://media.istockphoto.com/id/478622125/photo/pressure-gauge.jpg?s=612x612&w=0&k=20&c=5dC83PrIAouOTnrS-qthEg1AR_GBkn4oAxq3iDD25_4=');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    font-size: 16px; /* Increase base font size */
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background-color: #46aeeb79;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(138, 173, 189, 0.1);
+}
+
+h1, h2, h3, h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 2.5em; /* Increase h1 size */
+}
+
+h2 {
+    font-size: 2em; /* Increase h2 size */
+}
+
+h3 {
+    font-size: 1.75em; /* Increase h3 size */
+}
+
+h4 {
+    font-size: 1.5em; /* Increase h4 size */
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    font-size: 1.1em; /* Increase list item size */
+}
+
+/* Specific Section Styles */
+.heat-dissipation-failure {
+    background-color: #fbe9e7;
+    border: 1px solid #f5b7b1;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.heat-dissipation-failure h2 {
+    color: #e74c3c;
+}
+
+.prediction-result {
+    background-color: #e8f5e9;
+    border: 1px solid #a5c4d6;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.prediction-result h2 {
+    color: #0ac513;
+}
+
+.container h1 {
+    color: #1e88e5;
+}
+
+.section {
+    background-color: #e3f2fd;
+    border: 1px solid #81d4fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section h2 {
+    color: #0277bd;
+}
+
+.content {
+    background-color: #fff3e0;
+    border: 1px solid #ffcc80;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.content h2 {
+    color: #ff8a65;
+}
+
+.content-section {
+    background-color: #b3e5fc;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.content-section h2 {
+    color: #689f38;
+}
+
+.content-section h3 {
+    color: #9e9e9e;
+}
+
+.content-section p {
+    margin-bottom: 20px;
+    font-size: 1.1em; /* Increase paragraph size */
+}
+
+.content-section ul {
+    margin-left: 40px;
+    font-size: 1.1em; /* Increase list item size */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .section, .content, .content-section {
+        padding: 15px;
+    }
+}
+
+</style>
+
+{% if prediction_text == 'Heat Dissipation Failure' %}
+
+<div class="heat-dissipation-failure">
+  <center>
+    <h2>Heat Dissipation Failure</h2><br>
+    <img src="https://static.c.realme.com/IN/thread/1194998362030473216.jpg" style="width: 200px; height: 200px;" alt="">
+  </center><br><br><br>
+
+  <h3>Description</h3>
+  <p>
+      Heat Dissipation Failure occurs when a device or system is unable to effectively release or manage the heat generated during operation. This can lead to overheating, reduced performance, and potential damage to components. Common causes include inadequate cooling mechanisms, thermal paste degradation, or blocked ventilation pathways.
+      Prolonged exposure to excessive heat can cause irreversible damage to sensitive electronics, leading to system instability, unexpected shutdowns, and a shortened lifespan of the hardware.
+  </p>
+  <p>
+      In critical environments such as data centers or industrial applications, heat dissipation failures can result in costly downtime and loss of data integrity. Therefore, understanding the underlying causes and implementing robust thermal management strategies is essential for maintaining optimal system performance and reliability.
+  </p>
+
+  <h3>Causes</h3>
+  <ul>
+      <li>Inadequate or malfunctioning cooling components, such as fans or heat sinks.</li>
+      <li>Blocked or clogged air vents and filters, leading to restricted airflow.</li>
+      <li>Degradation of thermal interface materials (e.g., thermal paste) over time.</li>
+      <li>Improper system design that does not account for heat load distribution.</li>
+      <li>External environmental factors such as high ambient temperatures or dust accumulation.</li>
+  </ul>
+
+  <h3>Symptoms</h3>
+  <ul>
+      <li>Frequent system crashes or unexpected shutdowns due to thermal overload.</li>
+      <li>Noticeable reduction in system performance, particularly during high processing loads.</li>
+      <li>Excessive fan noise as the cooling system attempts to compensate for rising temperatures.</li>
+      <li>Visible warning signs on system monitoring software indicating high temperatures.</li>
+      <li>Physical signs of overheating, such as warping or discoloration of components.</li>
+  </ul>
+
+  <h3>Precautions</h3>
+  <ul>
+      <li>Ensure that all cooling components, such as fans and heat sinks, are properly installed and functioning.</li>
+      <li>Regularly clean dust and debris from ventilation areas to prevent blockages.</li>
+      <li>Monitor system temperatures using appropriate software to detect any abnormal rises early.</li>
+      <li>Use high-quality thermal paste and replace it if it shows signs of degradation.</li>
+      <li>Keep the environment around the system cool and well-ventilated to reduce the risk of overheating.</li>
+      <li>Install additional cooling solutions such as case fans or liquid cooling systems if necessary.</li>
+  </ul>
+
+  <h3>Prevention</h3>
+  <ul>
+      <li>Design systems with sufficient cooling capacity for the expected heat load.</li>
+      <li>Incorporate redundant cooling systems to enhance reliability in case of component failure.</li>
+      <li>Perform routine maintenance and inspections to ensure all cooling mechanisms are operational.</li>
+      <li>Implement thermal management solutions such as heat spreaders and heat pipes to improve heat distribution.</li>
+      <li>Consider using materials with high thermal conductivity for components that generate significant heat.</li>
+      <li>Educate users on the importance of keeping their systems clean and well-maintained to prevent heat dissipation issues.</li>
+  </ul>
+
+  <h3>Solutions</h3>
+  <ul>
+      <li>Upgrade to more efficient cooling systems, such as liquid cooling, if traditional air cooling proves insufficient.</li>
+      <li>Replace any malfunctioning or degraded components, such as fans or thermal paste, to restore proper heat dissipation.</li>
+      <li>Reconfigure the system layout to improve airflow and reduce hotspots.</li>
+      <li>Install software that dynamically adjusts the system’s performance based on temperature readings to prevent overheating.</li>
+      <li>In severe cases, consider reducing the workload or operating the system in a cooler environment.</li>
+  </ul>
+</div>
+
+
+{% elif prediction_text == 'No Failure' %}
+  
+<div class="prediction-result">
+  <center>
+    <h2>No Failure</h2>
+    <img src="https://images.pexels.com/photos/190539/pexels-photo-190539.jpeg?cs=srgb&dl=pexels-mike-bird-190539.jpg&fm=jpg" width="200px" height="200px" alt="">
+  </center><br><br><br>
+  
+  <section class="description">
+    <h3>Description</h3>
+    <p>
+        The prediction indicates that no failure has been detected in the system. This suggests that the current condition or state is stable and functioning as expected without any critical issues. The system is operating efficiently and there are no immediate concerns regarding its performance.
+    </p>
+    <p>
+        It is important to note that while no failure has been detected at this moment, continuous monitoring is essential to ensure the system remains in optimal condition. Regular evaluations and proactive measures can help in early detection of potential issues and maintaining overall system health.
+    </p>
+  </section>
+  
+  <section class="precautions">
+    <h3>Precautions</h3>
+    <ul>
+        <li>Regularly monitor system performance to ensure stability and address any anomalies promptly.</li>
+        <li>Perform routine maintenance checks to prevent potential issues and ensure all components are functioning correctly.</li>
+        <li>Keep the system updated with the latest patches and updates to safeguard against vulnerabilities and performance degradation.</li>
+        <li>Verify that backup systems are operational and recent backups are available to avoid data loss in unforeseen circumstances.</li>
+        <li>Check system logs periodically for any warning signs or unusual behavior that might indicate emerging problems.</li>
+    </ul>
+  </section>
+  
+  <section class="prevention">
+    <h3>Prevention</h3>
+    <ul>
+        <li>Implement regular diagnostic checks to proactively identify any emerging problems and address them before they escalate.</li>
+        <li>Maintain a log of system performance and issues to spot trends early and take preventive actions as needed.</li>
+        <li>Ensure all safety measures and guidelines are followed to avoid potential failures and maintain a secure operating environment.</li>
+        <li>Educate system users about best practices for maintaining system health and preventing accidental damage.</li>
+        <li>Review and update maintenance protocols regularly to incorporate new technologies and practices that enhance system reliability.</li>
+    </ul>
+  </section>
+
+  <section class="recommendations">
+    <h3>Recommendations</h3>
+    <ul>
+        <li>Consider implementing automated monitoring tools that provide real-time alerts and diagnostic reports.</li>
+        <li>Review and optimize system configurations periodically to ensure they align with current operational requirements.</li>
+        <li>Evaluate and upgrade system components as needed to keep up with technological advancements and improve performance.</li>
+        <li>Engage in periodic training and skill development for system administrators to enhance their ability to manage and troubleshoot the system effectively.</li>
+    </ul>
+  </section>
+</div>
+
+
+
+{% elif prediction_text == 'Overstrain Failure' %}
+
+<div class="container">
+  <center><h1 style="color: white;">Overstrain Failure</h1>
+  <img src="data:image/jpeg;base64,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" width="200px" height="200px" alt=""></center><br><br><br>
+
+  <div class="section">
+    <h2>Description</h2>
+    <p>Overstrain failure occurs when an object or material is subjected to stress or load beyond its capacity, leading to its breakdown or malfunction. This type of failure is commonly seen in mechanical structures, materials, and even in living organisms, where excessive force or stress exceeds the limits of their endurance. Overstrain can result from sudden impacts, prolonged overuse, or poor design.</p>
+  </div>
+
+  <div class="section">
+    <h2>Symptoms</h2>
+    <p>Symptoms of overstrain failure can vary depending on the type of material or system affected. Common symptoms include:</p>
+    <ul>
+      <li><strong>Cracks and Deformations:</strong> Visible cracks, warping, or deformation of materials indicating structural weakness.</li>
+      <li><strong>Unexpected Failures:</strong> Sudden breakdowns or malfunctioning of equipment or structures under normal operating conditions.</li>
+      <li><strong>Unusual Noises:</strong> Unusual creaking, popping, or grinding noises during operation, signaling potential overstrain.</li>
+      <li><strong>Reduced Performance:</strong> Decrease in efficiency or performance of machinery or structures due to compromised integrity.</li>
+      <li><strong>Visual Inspection Issues:</strong> Discoloration, wear marks, or other signs visible through routine inspections.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Precautions</h2>
+    <p>To prevent overstrain failure, it is crucial to:</p>
+    <ul>
+      <li>Ensure that materials and structures are designed to handle the expected loads and stresses.</li>
+      <li>Regularly inspect and maintain equipment to detect any signs of wear and tear that could lead to overstrain.</li>
+      <li>Use safety margins in design to accommodate unexpected loads or stresses.</li>
+      <li>Train personnel to handle materials and equipment properly, avoiding excessive force or misuse.</li>
+      <li>Implement proper procedures for loading and unloading to prevent sudden impacts or overloads.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Prevention</h2>
+    <p>Effective prevention strategies include:</p>
+    <ul>
+      <li>Conducting thorough stress testing and simulations during the design phase to ensure durability.</li>
+      <li>Applying appropriate standards and guidelines for material selection and structural design.</li>
+      <li>Adopting regular maintenance schedules and inspections to identify and address potential issues before they lead to failure.</li>
+      <li>Educating users and operators on the importance of following safety protocols and operating within design limits.</li>
+      <li>Monitoring performance data and analyzing any anomalies to anticipate and prevent overstrain conditions.</li>
+    </ul>
+  </div>
+</div>
+
+
+{% elif prediction_text == 'Power Failure' %}
+<div class="container">
+  <section>
+    <center>
+      <h1>Power Failure</h1><br>
+      <img src="https://www.circuits-diy.com/wp-content/uploads/2020/06/Power-Failure-Light-Circuit-using-AA-Battery.jpg" width="200px" height="200px" alt="">
+    </center><br><br><br>
+  </section>
+  <div class="section" id="description">
+      <h2>Description</h2>
+      <p>Power failure occurs when the electrical power supply to a building or area is interrupted or lost. This can be caused by various factors such as equipment failure, natural disasters, or overloads in the electrical grid. It can result in the loss of electricity, affecting appliances, lighting, and heating systems.</p>
+  </div>
+  <div class="section" id="symptoms">
+      <h2>Symptoms</h2>
+      <p>Common symptoms of a power failure include:</p>
+      <ul>
+          <li>Complete loss of power to all electrical devices and lighting.</li>
+          <li>Unexpected darkness or dimming of lights in the affected area.</li>
+          <li>Unresponsive electronics, such as computers, televisions, and appliances.</li>
+          <li>Flashing or flickering lights just before the outage occurs.</li>
+          <li>Tripped circuit breakers or blown fuses when power is restored.</li>
+          <li>Alarms or notifications from backup power systems if installed.</li>
+      </ul>
+  </div>
+  <div class="section" id="precautions">
+      <h2>Precautions</h2>
+      <p>To reduce the risk of power failure, consider implementing the following precautions:</p>
+      <ul>
+          <li>Regularly inspect and maintain electrical equipment and wiring.</li>
+          <li>Install surge protectors to safeguard against electrical spikes.</li>
+          <li>Keep backup power sources, such as generators, ready for use in emergencies.</li>
+          <li>Ensure that circuit breakers and fuses are functioning correctly.</li>
+          <li>Stay informed about weather conditions and potential threats that could impact power supply.</li>
+      </ul>
+  </div>
+  <div class="section" id="prevention">
+      <h2>Prevention</h2>
+      <p>Preventive measures can help minimize the likelihood of power failures:</p>
+      <ul>
+          <li>Regularly test and maintain backup power systems to ensure they are operational when needed.</li>
+          <li>Upgrade outdated electrical systems and equipment to handle current power demands.</li>
+          <li>Install uninterruptible power supplies (UPS) for critical systems and devices.</li>
+          <li>Educate household or business members about what to do in case of a power outage.</li>
+          <li>Collaborate with local utility providers to stay informed about planned maintenance or potential issues.</li>
+      </ul>
+  </div>
+</div>
+
+
+{% elif prediction_text == 'Random Failures' %}
+<div class="content">
+  <center>
+    <h2>Random Failures</h2>
+    <img src="https://www.shutterstock.com/shutterstock/photos/785685529/display_1500/stock-photo-sparks-flying-while-machine-griding-and-finishing-metal-785685529.jpg" width="200px" height="200px" alt="">
+  </center><br><br><br>
+  
+  <section id="description">
+      <h3>Description</h3>
+      <p>Random Failures refer to unpredictable and sporadic breakdowns or malfunctions in systems, components, or processes that occur without any clear pattern. These failures can be caused by various factors such as manufacturing defects, unexpected environmental conditions, or sudden stress on materials. Unlike systematic failures, which can be traced to specific causes, random failures are often harder to predict and diagnose.</p>
+  </section>
+  
+  <section id="symptoms">
+      <h3>Symptoms</h3>
+      <p>Symptoms of random failures may vary depending on the system or component affected, but common indicators include:</p>
+      <ul>
+          <li>Unexplained and sudden malfunctions or breakdowns of equipment or machinery.</li>
+          <li>Intermittent or sporadic issues that cannot be consistently reproduced.</li>
+          <li>Unusual noises, vibrations, or performance changes that occur without warning.</li>
+          <li>Unexpected system crashes or software errors that occur irregularly.</li>
+          <li>Fluctuations in performance metrics that do not align with normal operational patterns.</li>
+          <li>Failure of components or systems that were previously functioning correctly without any apparent reason.</li>
+      </ul>
+  </section>
+  
+  <section id="precautions">
+      <h3>Precautions</h3>
+      <ul>
+          <li>Ensure regular maintenance and inspection of equipment to identify potential issues before they lead to failures.</li>
+          <li>Implement quality control measures during manufacturing to minimize the likelihood of defects.</li>
+          <li>Use high-quality materials and components that are less likely to fail unexpectedly.</li>
+          <li>Monitor environmental conditions and operational stress to prevent conditions that could lead to random failures.</li>
+          <li>Keep detailed records of any anomalies or irregularities to help identify patterns that may indicate potential random failures.</li>
+      </ul>
+  </section>
+  
+  <section id="prevention">
+      <h3>Prevention</h3>
+      <p>While completely eliminating random failures is challenging, you can reduce their occurrence by:</p>
+      <ul>
+          <li>Adopting a proactive approach to maintenance and using predictive maintenance techniques.</li>
+          <li>Designing systems with built-in redundancy and fail-safes to mitigate the impact of unexpected failures.</li>
+          <li>Regularly updating and testing equipment and software to address potential vulnerabilities.</li>
+          <li>Training staff to recognize early signs of potential failures and respond appropriately.</li>
+          <li>Conducting thorough risk assessments and implementing strategies to address identified risks.</li>
+      </ul>
+  </section>
+</div>
+
+{% elif prediction_text == 'Tool Wear Failure' %}
+<div class="content-section">
+  
+  <center>
+    <h2>Tool Wear Failure</h2>
+    <img src="https://www.shutterstock.com/shutterstock/photos/1772384783/display_1500/stock-photo-metal-machine-tools-industry-cnc-turning-machine-high-speed-cutting-is-operation-flying-sparks-of-1772384783.jpg" width="200px" height="200px" alt="">
+  </center><br><br><br>
+
+  <p>
+      Tool wear failure is a critical issue in manufacturing and machining processes. Predictive models using machine learning can help in 
+      identifying potential tool wear before it leads to significant failures. These models analyze data from sensors and historical records 
+      to forecast when a tool is likely to wear out, allowing for timely maintenance and avoiding unexpected downtimes.
+  </p>
+  
+  <h4>Description</h4>
+  <p>
+      Tool wear occurs due to friction, heat, and mechanical stress during the machining process. As tools wear out, their effectiveness 
+      decreases, leading to poor quality of workpieces and potential damage to the machine itself. Predictive models leverage various data 
+      sources to detect patterns indicative of wear and predict tool life accurately.
+  </p>
+  
+  <h4>Symptoms</h4>
+  <p>Symptoms of tool wear failure can manifest in several ways, including:</p>
+  <ul>
+    <li><strong>Decreased Cutting Efficiency:</strong> Reduced performance and longer machining times due to worn tools.</li>
+    <li><strong>Surface Finish Issues:</strong> Poor surface quality on machined parts, including roughness or irregularities.</li>
+    <li><strong>Increased Vibration:</strong> Unusual vibrations or noises during machining, indicating tool degradation.</li>
+    <li><strong>Inconsistent Dimensional Accuracy:</strong> Variations in the dimensions of the finished parts, leading to tolerance issues.</li>
+    <li><strong>Tool Chipping or Cracking:</strong> Visible damage on the tool surface, such as chips or cracks.</li>
+    <li><strong>Increased Tool Wear Rate:</strong> Accelerated wear and tear of tools compared to expected performance.</li>
+  </ul>
+  
+  <h4>Prevention</h4>
+  <p>
+      Preventing tool wear failure involves regular monitoring and maintenance practices. Implementing machine learning models for predictive 
+      maintenance can significantly reduce the risk of unexpected failures. Some strategies include:
+      <ul>
+          <li>Routine inspection of tools and machinery.</li>
+          <li>Using high-quality tools and materials to minimize wear.</li>
+          <li>Optimizing machining parameters to reduce excessive wear.</li>
+          <li>Regularly updating predictive models with new data for better accuracy.</li>
+      </ul>
+  </p>
+  
+  <h4>Precautions</h4>
+  <p>
+      To ensure effective use of predictive models for tool wear failure, consider the following precautions:
+      <ul>
+          <li>Ensure that the data collected from sensors is accurate and reliable.</li>
+          <li>Regularly validate and refine predictive models to maintain their accuracy.</li>
+          <li>Train staff to interpret model outputs and take appropriate actions based on predictions.</li>
+          <li>Have contingency plans in place for unexpected tool failures despite predictions.</li>
+      </ul>
+  </p>
+</div>
+
+{% endif %}      
+{% endblock content %}
+

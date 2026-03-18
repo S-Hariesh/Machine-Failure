@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Failure Prediction</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .page-wrapper {
+      max-width: 1250px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 300px 420px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── Card base ── */
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5e7;
+      border-radius: 14px;
+      padding: 28px 32px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      background: none;
+      border: none;
+    }
+
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ── Buttons & Toggles ── */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      border: 1px solid #e5e5e7;
+      background: #fff;
+      color: #1d1d1f;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #f0f0f2;
+    }
+
+    .btn-action.paused {
+      background: #fff0f0;
+      border-color: #ffcccc;
+      color: #d32f2f;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      padding: 6px 12px;
+      border-radius: 100px;
+      border: 1px solid #e5e5e7;
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e5e5e7;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    input:checked+.slider {
+      background-color: #6366f1;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(16px);
+    }
+
+    .toggle-label.active {
+      color: #1d1d1f;
+    }
+
+    .toggle-label.test-active {
+      color: #6366f1;
+    }
+
+    /* ── Sensor badge ── */
+    .sensor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .sensor-badge.connected {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .sensor-badge.disconnected {
+      background: #fce4ec;
+      color: #c62828;
+    }
+
+    .sensor-badge.test-mode {
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+
+    .sensor-badge .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .sensor-badge.connected .dot {
+      background: #43a047;
+      animation: blink 1.6s infinite;
+    }
+
+    .sensor-badge.disconnected .dot {
+      background: #e53935;
+    }
+
+    .sensor-badge.test-mode .dot {
+      background: #6366f1;
+      animation: blink 1.6s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    /* ── Countdown ring ── */
+    .countdown-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #888;
+      font-weight: 500;
+    }
+
+    .countdown-ring {
+      width: 28px;
+      height: 28px;
+      position: relative;
+    }
+
+    .countdown-ring svg {
+      transform: rotate(-90deg);
+      width: 28px;
+      height: 28px;
+    }
+
+    .countdown-ring .track {
+      fill: none;
+      stroke: #e5e5e7;
+      stroke-width: 3;
+    }
+
+    .countdown-ring .progress {
+      fill: none;
+      stroke: #1d1d1f;
+      stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .countdown-ring .num {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #1d1d1f;
+    }
+
+    /* ── Form ── */
+    .form-card h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 42px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: #fafafa;
+      transition: border-color 0.2s, background 0.2s;
+      color: #1d1d1f;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #1d1d1f;
+      background: #fff;
+    }
+
+    .field input.live-fill {
+      border-color: #43a047;
+      background: #f1f8e9;
+      transition: background 0.6s ease;
+    }
+
+    .field input.test-fill {
+      border-color: #6366f1;
+      background: #eef2ff;
+      transition: background 0.6s ease;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-radius: 8px;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #333;
+    }
+
+    /* ── Live Prediction Card ── */
+    .status-card {
+      background: #fff;
+      border: 1px solid #e5e5e7;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .status-card h2 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .prediction-value {
+      font-size: 20px;
+      font-weight: 700;
+      transition: color 0.3s;
+    }
+
+    .prediction-value.ok {
+      color: #1b8a4a;
+    }
+
+    .prediction-value.warn {
+      color: #c62828;
+    }
+
+    .prediction-value.empty {
+      color: #1d1d1f;
+    }
+
+    /* ── Data Log ── */
+    .log-card h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .log-list {
+      max-height: 520px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+
+    .log-entry {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fafafa;
+      font-size: 11px;
+      border: 1px solid #eee;
+      animation: fadeSlide 0.3s ease;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .log-entry .log-time {
+      color: #999;
+      font-weight: 600;
+    }
+
+    .log-entry .log-pred {
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+    .log-pred.ok {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .log-pred.warn {
+      background: #fce4ec;
+      color: #c62828;
+    }
+
+    .log-entry .log-values {
+      display: flex;
+      gap: 8px;
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .log-entry .log-values span {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .log-entry .log-values .lbl {
+      color: #999;
+      font-weight: 400;
+      font-size: 10px;
+    }
+
+    .log-entry.error-entry {
+      background: #fff5f5;
+      border-color: #fdd;
+    }
+
+    .log-empty {
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+      padding: 30px 10px;
+      border: none;
+      background: transparent;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Layout columns ── */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .middle-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .chart-card {
+      background: #fff;
+      border: 1px solid #e5e5e7;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .chart-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    .chart-box {
+      position: relative;
+      height: 180px;
+      width: 100%;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1000px) {
+      .page-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Machine Failure Prediction</h1>
+      <div class="header-right">
+
+        <!-- Play/Pause Button -->
+        <button id="btnPause" class="btn-action">
+          <svg style="width:14px;height:14px" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M14,19H18V5H14M6,19H10V5H6V19Z" />
+          </svg>
+          Pause
+        </button>
+
+        <!-- Toggle Switch for Test Data -->
+        <div class="toggle-container">
+          <span id="lblLive" class="toggle-label active">Live</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="testDataToggle">
+            <span class="slider"></span>
+          </label>
+          <span id="lblTest" class="toggle-label">Dataset Test</span>
+        </div>
+
+        <div id="sensorBadge" class="sensor-badge disconnected">
+          <span class="dot"></span>
+          <span id="statusLabel">Connecting…</span>
+        </div>
+
+        <div class="countdown-wrap">
+          <div class="countdown-ring">
+            <svg viewBox="0 0 28 28">
+              <circle class="track" cx="14" cy="14" r="11" />
+              <circle id="cdProgress" class="progress" cx="14" cy="14" r="11" stroke-dasharray="69.115"
+                stroke-dashoffset="0" />
+            </svg>
+            <span id="cdNum" class="num">5</span>
+          </div>
+          <span>refresh</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Left Column: Charts -->
+    <div class="left-column">
+      <!-- RPM Chart -->
+      <div class="chart-card">
+        <h3>Rotational Speed (RPM)</h3>
+        <div class="chart-box">
+          <canvas id="chartRpm"></canvas>
+        </div>
+      </div>
+      <!-- Temp Chart -->
+      <div class="chart-card">
+        <h3>Air Temperature (K)</h3>
+        <div class="chart-box">
+          <canvas id="chartTemp"></canvas>
+        </div>
+      </div>
+      <!-- VIB/Torque Chart -->
+      <div class="chart-card">
+        <h3>Torque (Nm)</h3>
+        <div class="chart-box">
+          <canvas id="chartTorque"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Column: Status & Inputs -->
+    <div class="middle-column">
+      <!-- Live Prediction Status Card -->
+      <div class="status-card">
+        <h2 id="predictionTitle">Live ML Prediction</h2>
+        <div id="livePrediction" class="prediction-value empty">—</div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="card form-card">
+        <h2>Sensor Inputs</h2>
+        <form method="post" action="{% url 'model' %}">
+          {% csrf_token %}
+
+          <div class="field">
+            <label for="Air_temperature">Air Temp (K)</label>
+            <input type="number" step="0.000001" id="Air_temperature" name="Air_temperature" placeholder="—">
+          </div>
+          <div class="field">
+            <label for="Process_temperature">Process Temp (K)</label>
+            <input type="number" step="0.000001" id="Process_temperature" name="Process_temperature" placeholder="—">
+          </div>
+          <div class="field">
+            <label for="Rotational_speed">Speed (rpm)</label>
+            <input type="number" step="0.000001" id="Rotational_speed" name="Rotational_speed" placeholder="—">
+          </div>
+          <div class="field">
+            <label for="Torque">Torque (Nm)</label>
+            <input type="number" step="0.000001" id="Torque" name="Torque" placeholder="—">
+          </div>
+          <div class="field">
+            <label for="Tool_wear">Tool Wear (min)</label>
+            <input type="number" step="0.000001" id="Tool_wear" name="Tool_wear" placeholder="—">
+          </div>
+
+          <button type="submit" class="btn-submit">Predict Failure (Manual)</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Log -->
+    <div class="sidebar">
+      <div class="card log-card">
+        <h2>Live Data Log</h2>
+        <div id="logList" class="log-list">
+          <div class="log-empty">Waiting for sensor data…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Constants ──
+    const INTERVAL = 1;                      // seconds
+    const CIRCUM = 2 * Math.PI * 11;      // ≈ 69.115
+    const MAX_LOG = 50;
+    const MAX_CHART_POINTS = 20;
+
+    const cdProgress = document.getElementById('cdProgress');
+    const cdNum = document.getElementById('cdNum');
+    const badge = document.getElementById('sensorBadge');
+    const statusLbl = document.getElementById('statusLabel');
+    const logList = document.getElementById('logList');
+    const livePrediction = document.getElementById('livePrediction');
+    const predictionTitle = document.getElementById('predictionTitle');
+    const testDataToggle = document.getElementById('testDataToggle');
+    const lblLive = document.getElementById('lblLive');
+    const lblTest = document.getElementById('lblTest');
+    const btnPause = document.getElementById('btnPause');
+
+    let countdown = INTERVAL;
+    let isPaused = false;
+
+    // ── UI Listeners ──
+    testDataToggle.addEventListener('change', () => {
+      if (testDataToggle.checked) {
+        lblLive.classList.remove('active');
+        lblTest.classList.add('test-active');
+        predictionTitle.textContent = 'Test ML Prediction';
+      } else {
+        lblTest.classList.remove('test-active');
+        lblLive.classList.add('active');
+        predictionTitle.textContent = 'Live ML Prediction';
+      }
+    });
+
+    btnPause.addEventListener('click', () => {
+      isPaused = !isPaused;
+      if (isPaused) {
+        btnPause.innerHTML = `<svg style="width:14px;height:14px" viewBox="0 0 24 24"><path fill="currentColor" d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg> Resume`;
+        btnPause.classList.add('paused');
+        statusLbl.textContent = 'Paused';
+        badge.className = 'sensor-badge disconnected';
+      } else {
+        btnPause.innerHTML = `<svg style="width:14px;height:14px" viewBox="0 0 24 24"><path fill="currentColor" d="M14,19H18V5H14M6,19H10V5H6V19Z" /></svg> Pause`;
+        btnPause.classList.remove('paused');
+        countdown = INTERVAL; // Reset countdown
+        fetchSensorData();    // Immediately fetch when unpaused
+      }
+    });
+
+
+    // ── Chart.js Setup ──
+    const commonOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { display: false },
+        y: {
+          border: { display: false },
+          grid: { color: "#f0f0f0" },
+          ticks: { font: { family: "'Inter', sans-serif", size: 10 }, color: "#888" }
+        }
+      },
+      animation: { duration: 400 }
+    };
+
+    const ctxRpm = document.getElementById('chartRpm').getContext('2d');
+    const chartRpm = new Chart(ctxRpm, {
+      type: 'line',
+      data: { labels: [], datasets: [{ data: [], borderColor: '#3b82f6', backgroundColor: '#eff6ff', borderWidth: 2, fill: true, tension: 0.3 }] },
+      options: commonOpts
+    });
+
+    const ctxTemp = document.getElementById('chartTemp').getContext('2d');
+    const chartTemp = new Chart(ctxTemp, {
+      type: 'line',
+      data: { labels: [], datasets: [{ data: [], borderColor: '#eab308', backgroundColor: '#fefce8', borderWidth: 2, fill: true, tension: 0.3 }] },
+      options: commonOpts
+    });
+
+    const ctxTorque = document.getElementById('chartTorque').getContext('2d');
+    const chartTorque = new Chart(ctxTorque, {
+      type: 'line',
+      data: { labels: [], datasets: [{ data: [], borderColor: '#ef4444', backgroundColor: '#fef2f2', borderWidth: 2, fill: true, tension: 0.3 }] },
+      options: commonOpts
+    });
+
+    function addDataToChart(chart, label, dataValue) {
+      if (dataValue === null || dataValue === undefined || isNaN(dataValue)) return;
+      chart.data.labels.push(label);
+      chart.data.datasets[0].data.push(dataValue);
+      if (chart.data.labels.length > MAX_CHART_POINTS) {
+        chart.data.labels.shift();
+        chart.data.datasets[0].data.shift();
+      }
+      chart.update();
+    }
+
+
+    // ── Flash-highlight helper ──
+    function flashField(el, isTest) {
+      const cls = isTest ? 'test-fill' : 'live-fill';
+      el.classList.add(cls);
+      setTimeout(() => el.classList.remove(cls), 1200);
+    }
+
+    // ── Add log entry ──
+    function addLog(data) {
+      // Remove empty-state message
+      const empty = logList.querySelector('.log-empty');
+      if (empty) empty.remove();
+
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-IN', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+
+      if (!data.connected) {
+        entry.className += ' error-entry';
+        entry.innerHTML = `<div class="log-header"><span class="log-time">${time}</span><span style="color:#c62828; font-weight:600;">Error</span></div><span class="log-values">No data received</span>`;
+      } else {
+        const isOk = data.prediction === 'No Failure';
+        const predClass = isOk ? 'ok' : 'warn';
+        const safePred = data.prediction || 'Unknown';
+        const sourceTag = data.mode === 'test' ? '<span style="background:#eef2ff; color:#4f46e5;font-weight:bold;padding:1px 5px;border-radius:3px;font-size:9px;margin-left:4px;">TEST</span>' : '';
+
+        entry.innerHTML = `
+        <div class="log-header">
+          <span class="log-time">${time} ${sourceTag}</span>
+          <span class="log-pred ${predClass}">${safePred}</span>
+        </div>
+        <span class="log-values" style="flex-wrap: nowrap;">
+          <span><span class="lbl">RPM</span> ${data.rpm !== null ? data.rpm : '—'}</span>
+          <span><span class="lbl">TEMP</span> ${data.temp !== null ? data.temp : '—'}</span>
+          <span><span class="lbl">VIB</span> ${data.vib !== null ? data.vib : '—'}</span>
+          <span><span class="lbl">P.TEMP</span> ${data.process_temp !== undefined && data.process_temp !== null ? data.process_temp.toFixed(1) : '—'}</span>
+          <span><span class="lbl">WEAR</span> ${data.tool_wear !== undefined && data.tool_wear !== null ? data.tool_wear : '—'}</span>
+        </span>`;
+      }
+
+      logList.prepend(entry);
+
+      // Cap entries
+      while (logList.children.length > MAX_LOG) {
+        logList.removeChild(logList.lastChild);
+      }
+    }
+
+    // ── Fetch sensor data ──
+    function fetchSensorData() {
+      if (isPaused) return;
+
+      const isTest = testDataToggle.checked;
+      const url = isTest ? '/fetch_firebase_data/?mode=test' : '/fetch_firebase_data/';
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (isPaused) return; // double check edge case on response arrival
+
+          if (data.connected) {
+
+            if (data.mode === 'test') {
+              badge.className = 'sensor-badge test-mode';
+              statusLbl.textContent = 'Dataset Simulator';
+            } else {
+              badge.className = 'sensor-badge connected';
+              statusLbl.textContent = 'Firebase Connected';
+            }
+
+            if (data.temp !== null) { document.getElementById('Air_temperature').value = data.temp; flashField(document.getElementById('Air_temperature'), isTest); }
+            if (data.rpm !== null) { document.getElementById('Rotational_speed').value = data.rpm; flashField(document.getElementById('Rotational_speed'), isTest); }
+            if (data.vib !== null) { document.getElementById('Torque').value = data.vib; flashField(document.getElementById('Torque'), isTest); }
+            
+            if (data.process_temp !== undefined && data.process_temp !== null) { 
+              document.getElementById('Process_temperature').value = data.process_temp; 
+              flashField(document.getElementById('Process_temperature'), isTest); 
+            }
+            if (data.tool_wear !== undefined && data.tool_wear !== null) { 
+              document.getElementById('Tool_wear').value = data.tool_wear; 
+              flashField(document.getElementById('Tool_wear'), isTest); 
+            }
+
+            // Plot charts
+            const now = new Date();
+            const timeLabel = now.toLocaleTimeString('en-IN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            addDataToChart(chartRpm, timeLabel, data.rpm);
+            addDataToChart(chartTemp, timeLabel, data.temp);
+            addDataToChart(chartTorque, timeLabel, data.vib);
+
+            // Update Live Prediction Dashboard
+            if (data.prediction) {
+              livePrediction.textContent = data.prediction;
+              if (data.prediction === 'No Failure') {
+                livePrediction.className = 'prediction-value ok';
+              } else {
+                livePrediction.className = 'prediction-value warn';
+              }
+            } else {
+              livePrediction.textContent = '—';
+              livePrediction.className = 'prediction-value empty';
+            }
+
+          } else {
+            badge.className = 'sensor-badge disconnected';
+            statusLbl.textContent = 'Firebase Disconnected';
+            livePrediction.textContent = 'Offline';
+            livePrediction.className = 'prediction-value empty';
+          }
+          addLog(data);
+        })
+        .catch((e) => {
+          console.error(e);
+          if (isPaused) return;
+          badge.className = 'sensor-badge disconnected';
+          statusLbl.textContent = 'Server error';
+          livePrediction.textContent = 'Error';
+          livePrediction.className = 'prediction-value empty';
+          addLog({ connected: false });
+        });
+    }
+
+    // ── Countdown timer ──
+    function tick() {
+      if (isPaused) return;
+
+      countdown--;
+      if (countdown < 0) {
+        countdown = INTERVAL;
+        fetchSensorData();
+      }
+      cdNum.textContent = countdown;
+      const offset = CIRCUM * (1 - countdown / INTERVAL);
+      cdProgress.style.strokeDashoffset = offset;
+    }
+
+    // Initial fetch
+    fetchSensorData();
+    countdown = INTERVAL;
+    setInterval(tick, 1000);
+  </script>
+
+</body>
+
+</html>
